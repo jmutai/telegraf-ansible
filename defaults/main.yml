@@ -1,0 +1,77 @@
+---
+# Global variables
+telegraf_monitor_zimbra: True
+
+telegraf_agent_version: 1.4.0
+telegraf_agent_hostname: "{{ ansible_fqdn }}"
+telegraf_agent_interval: 10
+telegraf_agent_debug: False
+telegraf_agent_round_interval: True
+telegraf_agent_flush_interval: 10
+telegraf_agent_flush_jitter: 0
+telegraf_agent_aws_tags: False
+telegraf_agent_aws_tags_prefix: ""
+
+# v0.13 settings (not sure if supported in older version):
+telegraf_agent_collection_jitter: 0
+telegraf_agent_metric_batch_size: 1000
+telegraf_agent_metric_buffer_limit: 10000
+telegraf_agent_quiet: False
+
+# v1.1 settings:
+telegraf_agent_logfile: ""
+telegraf_agent_omit_hostname: False
+
+telegraf_global_tags: []
+
+
+telegraf_agent_output:
+  - type: influxdb
+    config:
+      - urls = ["http://ip-address:8086"]
+      - database = "{{ telegraf_agent_hostname }}"
+      - timeout = "0s"
+      - username = "auth-username"
+      - password = "auth-password"
+      - retention_policy = ""
+
+# defaults - /etc/telegraf/telegraf.conf
+telegraf_plugins_default:
+  - plugin: cpu
+    config:
+      - percpu = true
+      - totalcpu = true
+      - collect_cpu_time = false
+      - report_active = false
+  - plugin: disk
+    config:
+      - ignore_fs = ["tmpfs", "devtmpfs", "devfs"]
+  - plugin: io
+  - plugin: mem
+  - plugin: net
+  - plugin: system
+  - plugin: swap
+  - plugin: netstat
+  - plugin: processes
+  - plugin: kernel
+
+# Zimbra server
+telegraf_zimbra_plugins:
+    - memcached
+    - java
+    - mysqld
+    - slapd
+    - nginx
+
+telegraf_zimbra_exec_inputs:
+  - plugin: exec
+    config:
+      - commands = ["/usr/local/bin/zimbra_pflogsumm.pl -d today /var/log/zimbra.log"]
+      - name_override = "zimbra_stats"
+      - data_format = "influx"
+
+# extra configuration - /etc/telegraf/telegraf.d/*
+telegraf_plugins_extra: []
+
+# RedHat specific settings for convenience
+telegraf_redhat_releasever: "$releasever"

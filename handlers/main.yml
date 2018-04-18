@@ -1,0 +1,9 @@
+---
+- name: reload systemd configuration
+  command: systemctl daemon-reload
+
+- name: restart telegraf
+  service:
+    name: 'telegraf'
+    state: restarted
+    enabled: yes

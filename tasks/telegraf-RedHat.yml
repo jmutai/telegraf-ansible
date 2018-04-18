@@ -1,0 +1,32 @@
+---
+- name: set timezone to Africa/Nairobi
+  timezone:
+    name: Africa/Nairobi
+
+- name: Add telegraf repository
+  template:
+    src: 'influxdb.repo.j2'
+    dest: /etc/yum.repos.d/influxdb.repo
+
+- name: Install telegraf
+  yum:
+    name: telegraf
+    state: present
+    update_cache: yes
+
+- name: copy zimbra_pflogsumm.pl.j2
+  template:
+    src: 'zimbra_pflogsumm.pl.j2'
+    dest: /usr/local/bin/zimbra_pflogsumm.pl
+    mode: 0775
+  when: telegraf_monitor_zimbra
+
+- name: copy telegraf configuration file
+  template:
+    src: 'telegraf.conf.j2'
+    dest: /etc/telegraf/telegraf.conf
+    owner: telegraf
+    group: telegraf
+    mode: 0640
+  notify: restart telegraf
+
