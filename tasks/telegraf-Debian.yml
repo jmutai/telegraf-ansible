@@ -33,6 +33,7 @@
     name: telegraf
     state: present
     update_cache: yes
+    allow_unauthenticated: yes
 
 - name: copy zimbra_pflogsumm.pl.j2
   template:
