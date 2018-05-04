@@ -2,7 +2,7 @@
 # Global variables
 telegraf_monitor_zimbra: False
 telegraf_monitor_mysql: False
-telegraf_monitor_postfix: True
+telegraf_monitor_postfix: False
 
 telegraf_agent_version: 1.6.0
 telegraf_agent_hostname: "{{ ansible_fqdn }}"
