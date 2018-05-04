@@ -99,18 +99,29 @@
 {% endfor %}
 {% endif %}
 
-# Zimbra integration
-
 {% if telegraf_monitor_zimbra and telegraf_zimbra_plugins is defined and telegraf_zimbra_plugins is iterable %}
 {% for item in telegraf_zimbra_plugins %}
+# Zimbra integration
 [[inputs.procstat]]
 exe = "{{ item }}"
 prefix = "{{ item }}"
 {% endfor %}
 {% endif %}
-
 {% if telegraf_monitor_zimbra  and  telegraf_zimbra_exec_inputs is defined and telegraf_zimbra_exec_inputs is iterable %}
 {% for item in telegraf_zimbra_exec_inputs %}
+[[inputs.{{ item.plugin }}]]
+{% if item.interval is defined %}
+    interval = "{{ item.interval }}s"
+{% endif %}
+{% if item.config is defined and item.config is iterable %}
+{% for items in item.config %}
+    {{ items }}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% if telegraf_monitor_postfix  and  telegraf_postfix_inputs is defined and telegraf_postfix_inputs is iterable %}
+{% for item in telegraf_postfix_inputs %}
 [[inputs.{{ item.plugin }}]]
 {% if item.interval is defined %}
     interval = "{{ item.interval }}s"
